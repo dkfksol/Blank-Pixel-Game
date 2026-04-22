@@ -24,6 +24,7 @@
   },
   "name":"Blank Pixel Game",
   "resources":[
+    {"id":{"name":"fnt_large","path":"fonts/fnt_large/fnt_large.yy",},},
     {"id":{"name":"fnt_main","path":"fonts/fnt_main/fnt_main.yy",},},
     {"id":{"name":"Obj_camera","path":"objects/Obj_camera/Obj_camera.yy",},},
     {"id":{"name":"Obj_char","path":"objects/Obj_char/Obj_char.yy",},},
