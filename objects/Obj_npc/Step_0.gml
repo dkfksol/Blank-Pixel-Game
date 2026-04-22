@@ -1,9 +1,3 @@
 /// @description 플레이어와 멀어지면 대화창 끄기
-if (show_text == true) {
-    if (instance_exists(Obj_char)) {
-        // 플레이어 캐릭터와 거리가 40 픽셀 이상 멀어지면
-        if (distance_to_object(Obj_char) > 40) {
-            show_text = false; // 대화창 숨기기
-        }
-    }
-}
+// 기존의 로컬 말풍선용 코드는 글로벌 대화창 시스템이 도입되며 삭제되었습니다.
+// 글로벌 대화창 중에는 플레이어가 움직일 수 없으므로 이 코드는 더 이상 필요하지 않습니다.
