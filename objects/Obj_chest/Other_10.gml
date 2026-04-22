@@ -18,15 +18,9 @@ if (is_open == false) {
     
     // 4. 전 세계에 "나 이거 먹었다!" 라며 자막을 알림
     // Create 창에서 미리 적어둔 msg_success 변수를 불러옵니다.
-    global.dialogue_text = msg_success;
-    global.dialogue_active = true;
-    
-    keyboard_clear(ord("Z")); // 대화창 창 뜰 때 다중 따닥 방지
+    global.ShowDialogue([{name: "시스템", text: msg_success}]);
 } else {
     // 이미 털려버린 빈 상자라면
     // Create 창에서 미리 적어둔 msg_empty 변수를 불러옵니다.
-    global.dialogue_text = msg_empty;
-    global.dialogue_active = true;
-    
-    keyboard_clear(ord("Z"));
+    global.ShowDialogue([{name: "시스템", text: msg_empty}]);
 }

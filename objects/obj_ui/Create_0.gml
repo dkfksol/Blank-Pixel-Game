@@ -1,14 +1,25 @@
 /// @description 글로벌 매니저 전역 변수 초기화
 // 프로젝트 내 어디서든 쓸 수 있게 global 키워드를 사용합니다!
 global.dialogue_active = false; // 현재 대화창이 켜져있는가?
-global.dialogue_text = "";      // 현재 화면에 띄울 문구
+global.dialogue_data = [];      // 다중 대사 배열 [{name: "이름", text: "대사"}, ...]
+global.dialogue_index = 0;      // 현재 보여줄 대사의 순번
+
+// 대화창을 띄우기 위한 글로벌 함수
+global.ShowDialogue = function(_data_array) {
+    global.dialogue_data = _data_array;
+    global.dialogue_index = 0;
+    global.dialogue_active = true;
+    keyboard_clear(ord("Z")); // 다중 클릭 방지
+}
 
 // 카메라 화질 확장으로 인해 UI 레이어 해상도 기준점도 1280x720 으로 튼튼하게 고정해 줍니다.
 display_set_gui_size(1280, 720);
 
 global.inventory = []; // 먹은 아이템이 쏙쏙 들어올 무한의 빈 가방(배열)
 global.inventory_active = false; // 현재 가방(인벤토리) 화면이 띄워져 있는가?
+global.inv_state = 0; // 0: 닫힘, 1: 아이템 목록, 2: 행동 선택(사용/정보/버리기)
 global.inv_cursor = 0; // 가방 안에서 아이템을 고를 때 쓰는 화살표 커서 위치 번호
+global.inv_action_cursor = 0; // 0: 사용, 1: 정보, 2: 버리기
 
 // RPG 시스템의 꽃! 플레이어 스탯 (어디서든 접근 가능)
 global.hp = 50;
