@@ -20,14 +20,9 @@ if (global.dialogue_active == true) {
         var box_x = (1280 - box_width) / 2;
         var box_y = 720 - box_height - 20;
         
-        // 이름표 박스 렌더링
+        // 이름표 박스 (원자 컴포넌트 사용)
         if (speaker_name != "") {
-            draw_set_color(c_black);
-            draw_set_alpha(0.85);
-            draw_roundrect(box_x, box_y - 50, box_x + 200, box_y + 5, false);
-            
-            draw_set_color(c_white);
-            draw_roundrect(box_x, box_y - 50, box_x + 200, box_y + 5, true);
+            global.DrawNameBox(box_x, box_y - 50, 200, 55, 0.85);
             
             draw_set_color(c_yellow);
             draw_set_halign(fa_center);
@@ -41,14 +36,8 @@ if (global.dialogue_active == true) {
             draw_set_color(c_white);
         }
         
-        // 메인 대사 박스
-        draw_set_color(c_black);
-        draw_set_alpha(0.85);
-        draw_roundrect(box_x, box_y, box_x + box_width, box_y + box_height, false);
-        
-        draw_set_color(c_white);
-        draw_set_alpha(1.0);
-        draw_roundrect(box_x, box_y, box_x + box_width, box_y + box_height, true);
+        // 메인 대사 박스 (원자 컴포넌트 사용)
+        global.DrawBox(box_x, box_y, box_width, box_height, 0.85);
         
         // 텍스트 폰트 설정
         var lg_fnt = asset_get_index("fnt_large");
@@ -58,18 +47,14 @@ if (global.dialogue_active == true) {
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
         
-        // 타이핑 이펙트: 현재 위치까지만 잘라서 출력
+        // 타이핑 이펙트
         var display_text = string_copy(speaker_text, 1, global.typing_pos);
         draw_text_ext(box_x + 40, box_y + 40, display_text, -1, box_width - 80);
         
-        // 타이핑 완료 시 깜빡이는 ▼ 프롬프트 표시
+        // 타이핑 완료 시 깜빡이는 프롬프트 (원자 컴포넌트 사용)
         if (global.typing_done) {
-            // 0.5초 간격으로 깜빡임 (30프레임 기준)
             if ((current_time div 500) mod 2 == 0) {
-                draw_set_halign(fa_right);
-                draw_set_valign(fa_bottom);
-                draw_set_color(c_white);
-                draw_text(box_x + box_width - 30, box_y + box_height - 15, "▼");
+                global.DrawPrompt(box_x + box_width - 30, box_y + box_height - 15);
             }
         }
     }
@@ -82,14 +67,9 @@ if (global.inv_state > 0) {
     var inv_x = (1280 - inv_w) / 2;
     var inv_y = (720 - inv_h) / 2;
     
-    draw_set_color(c_black);
-    draw_set_alpha(0.85);
-    draw_roundrect(inv_x, inv_y, inv_x + inv_w, inv_y + inv_h, false);
+    // 메인 인벤토리 박스 (원자 컴포넌트 사용)
+    global.DrawBox(inv_x, inv_y, inv_w, inv_h, 0.85);
     
-    draw_set_color(c_white);
-    draw_roundrect(inv_x, inv_y, inv_x + inv_w, inv_y + inv_h, true);
-    
-    draw_set_alpha(1.0);
     draw_set_halign(fa_center);
     draw_text(1280 / 2, inv_y + 20, "--- ITEM ---");
     
@@ -130,17 +110,14 @@ if (global.inv_state > 0) {
             }
         }
         
-        // State 2: 행동 선택 메뉴
+        // State 2: 행동 선택 메뉴 (원자 컴포넌트 사용)
         if (global.inv_state == 2) {
             var action_w = 350;
             var action_h = 80;
             var action_x = inv_x + inv_w / 2 - action_w / 2;
             var action_y = inv_y + inv_h - 100;
             
-            draw_set_color(c_black);
-            draw_roundrect(action_x, action_y, action_x + action_w, action_y + action_h, false);
-            draw_set_color(c_white);
-            draw_roundrect(action_x, action_y, action_x + action_w, action_y + action_h, true);
+            global.DrawBox(action_x, action_y, action_w, action_h, 1.0);
             
             var menu_text = ["사용", "정보", "버리기"];
             var menu_spacing = action_w / 3;
@@ -162,8 +139,65 @@ if (global.inv_state > 0) {
     }
 }
 
+// ========================== 시스템 메뉴 (ESC) 화면 렌더링 ==========================
+if (global.sys_active) {
+    // 배경 어둡게
+    draw_set_color(c_black);
+    draw_set_alpha(0.6);
+    draw_rectangle(0, 0, 1280, 720, false);
+    draw_set_alpha(1.0);
+    
+    var sys_w = 500;
+    var sys_h = 400;
+    var sys_x = (1280 - sys_w) / 2;
+    var sys_y = (720 - sys_h) / 2;
+    
+    global.DrawBox(sys_x, sys_y, sys_w, sys_h, 0.9);
+    
+    draw_set_halign(fa_center);
+    var title = "SYSTEM MENU";
+    if (global.sys_state == 1) title = "SAVE GAME";
+    else if (global.sys_state == 2) title = "LOAD GAME";
+    else if (global.sys_state == 3) title = "DELETE SAVE";
+    
+    draw_set_color(c_white);
+    draw_text(1280 / 2, sys_y + 30, "- " + title + " -");
+    draw_set_halign(fa_left);
+    
+    var menu_items = [];
+    var menu_enabled = [];
+    
+    if (global.sys_state == 0) {
+        // 메인: 0=RESUME, 1=SAVE, 2=LOAD, 3=DELETE, 4=TITLE
+        menu_items = ["RESUME", "SAVE", "LOAD", "DELETE SAVE", "TITLE SCREEN"];
+        // 로드/삭제는 세이브가 하나라도 있을 때만 활성화 (선택적)
+        var any_save = false;
+        for (var i=0; i<global.sys_slots; i++) {
+            if (global.SaveExists(i)) { any_save = true; break; }
+        }
+        menu_enabled = [true, true, any_save, any_save, true];
+        global.DrawMenuList(sys_x + 100, sys_y + 100, menu_items, global.sys_cursor, 45, menu_enabled);
+    } 
+    else {
+        // 슬롯 메뉴 (1:Save, 2:Load, 3:Delete)
+        for (var i = 0; i < global.sys_slots; i++) {
+            var info = global.GetSaveInfo(i);
+            array_push(menu_items, "Slot " + string(i + 1) + " : " + info);
+            
+            if (global.sys_state == 1) {
+                array_push(menu_enabled, true); // 세이브는 항상 가능 (덮어쓰기)
+            } else {
+                array_push(menu_enabled, global.SaveExists(i)); // 로드/삭제는 존재할 때만
+            }
+        }
+        array_push(menu_items, "BACK");
+        array_push(menu_enabled, true);
+        
+        global.DrawMenuList(sys_x + 50, sys_y + 100, menu_items, global.sys_cursor, 55, menu_enabled);
+    }
+}
+
 // ========================== 화면 전환 오버레이 ==========================
-// 가장 마지막에 그려야 모든 UI 위를 덮음
 if (global.transition_active) {
     draw_set_color(c_black);
     draw_set_alpha(global.transition_alpha);

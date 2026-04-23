@@ -1,4 +1,12 @@
-/// @description 화면 전환 로직 업데이트
+/// @description 화면 전환 및 로드 복원 처리
+
+// 로드 후 플레이어 위치 복원 (룸 이동 완료 후 실행)
+if (global._load_pending && instance_exists(Obj_char)) {
+    Obj_char.x = global._load_player_x;
+    Obj_char.y = global._load_player_y;
+    Obj_char.facing_dir = global._load_facing_dir;
+    global._load_pending = false;
+}
 
 // 화면 전환 처리
 if (global.transition_active) {

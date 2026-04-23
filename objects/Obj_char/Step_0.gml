@@ -1,6 +1,7 @@
-// 1. 이벤트 우선순위: 대화창, 인벤토리, 화면 전환 중 플레이어 행동 정지
+// 1. 이벤트 우선순위: 대화창, 인벤토리, 화면 전환, 시스템 메뉴 중 플레이어 행동 정지
 if ((variable_global_exists("dialogue_active") && global.dialogue_active == true) || 
     (variable_global_exists("inventory_active") && global.inventory_active == true) ||
+    (variable_global_exists("sys_active") && global.sys_active == true) ||
     (variable_global_exists("transition_active") && global.transition_active == true)) {
     image_speed = 0;
     image_index = 0;

@@ -3,6 +3,87 @@
 // 화면 전환 중에는 모든 UI 입력 차단
 if (global.transition_active) exit;
 
+// ========================== 시스템 메뉴 (ESC) ==========================
+// 타이틀 화면이 아닐 때만 열기
+if (room != Room_title) {
+    if (keyboard_check_pressed(vk_escape)) {
+        if (!global.sys_active && !global.dialogue_active) {
+            global.sys_active = true;
+            global.sys_state = 0; // 메인
+            global.sys_cursor = 0;
+            // 인벤토리 강제 닫기
+            global.inv_state = 0;
+            global.inventory_active = false;
+        } else if (global.sys_active) {
+            // ESC로 닫거나 뒤로 가기
+            if (global.sys_state == 0) {
+                global.sys_active = false;
+            } else {
+                global.sys_state = 0;
+                global.sys_cursor = 0;
+            }
+        }
+        keyboard_clear(vk_escape);
+    }
+}
+
+// 시스템 메뉴 조작
+if (global.sys_active) {
+    var max_cursor = 0;
+    if (global.sys_state == 0) max_cursor = 4; // RESUME, SAVE, LOAD, DELETE, TITLE
+    else max_cursor = global.sys_slots; // 슬롯 0,1,2 + BACK(3)
+
+    if (keyboard_check_pressed(vk_up)) {
+        global.sys_cursor -= 1;
+        if (global.sys_cursor < 0) global.sys_cursor = max_cursor;
+    }
+    if (keyboard_check_pressed(vk_down)) {
+        global.sys_cursor += 1;
+        if (global.sys_cursor > max_cursor) global.sys_cursor = 0;
+    }
+    
+    if (keyboard_check_pressed(ord("Z"))) {
+        if (global.sys_state == 0) {
+            // 메인 메뉴 선택
+            if (global.sys_cursor == 0) { global.sys_active = false; } // RESUME
+            else if (global.sys_cursor == 1) { global.sys_state = 1; global.sys_cursor = 0; } // SAVE
+            else if (global.sys_cursor == 2) { global.sys_state = 2; global.sys_cursor = 0; } // LOAD
+            else if (global.sys_cursor == 3) { global.sys_state = 3; global.sys_cursor = 0; } // DELETE
+            else if (global.sys_cursor == 4) { 
+                // TITLE 화면으로
+                global.sys_active = false;
+                room_goto(Room_title); 
+            }
+        } else {
+            // 슬롯 선택 메뉴 (SAVE/LOAD/DELETE)
+            if (global.sys_cursor == global.sys_slots) {
+                // BACK 선택
+                global.sys_state = 0;
+                global.sys_cursor = 0;
+            } else {
+                // 특정 슬롯 선택
+                var slot = global.sys_cursor;
+                if (global.sys_state == 1) { // SAVE
+                    global.SaveGame(slot);
+                    global.sys_state = 0;
+                    global.sys_cursor = 0;
+                    global.sys_active = false;
+                } else if (global.sys_state == 2) { // LOAD
+                    if (global.SaveExists(slot)) {
+                        global.LoadGame(slot);
+                        global.sys_active = false;
+                    }
+                } else if (global.sys_state == 3) { // DELETE
+                    global.DeleteSave(slot);
+                    // 삭제 후 그대로 둠 (화면 갱신)
+                }
+            }
+        }
+        keyboard_clear(ord("Z"));
+    }
+    exit; // 시스템 메뉴 열려있으면 다른 UI 조작 막음
+}
+
 // ========================== 대화창 진행 로직 ==========================
 if (global.dialogue_active == true) {
     // 타이핑 이펙트 진행
