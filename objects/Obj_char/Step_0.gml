@@ -1,8 +1,9 @@
-// 1. 이벤트 우선순위: 대화창 또는 인벤토리 활성화 시 플레이어 행동 정지
+// 1. 이벤트 우선순위: 대화창, 인벤토리, 화면 전환 중 플레이어 행동 정지
 if ((variable_global_exists("dialogue_active") && global.dialogue_active == true) || 
-    (variable_global_exists("inventory_active") && global.inventory_active == true)) {
+    (variable_global_exists("inventory_active") && global.inventory_active == true) ||
+    (variable_global_exists("transition_active") && global.transition_active == true)) {
     image_speed = 0;
-    image_index = 0; // 대기 상태 스프라이트로 초기화
+    image_index = 0;
     exit;
 }
 

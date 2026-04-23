@@ -1,6 +1,6 @@
 /// @description 화면 최상단 강제 UI 렌더링 (Draw GUI)
 
-// 1. 글로벌 상태창 (체력바 등 상시 출력) 설정
+// 기본 폰트 설정
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 
@@ -14,13 +14,13 @@ if (global.dialogue_active == true) {
         var speaker_name = cur_dialogue.name;
         var speaker_text = cur_dialogue.text;
         
-        // 박스 레이아웃 설정
+        // 박스 레이아웃
         var box_width = 1000;
         var box_height = 200;
         var box_x = (1280 - box_width) / 2;
         var box_y = 720 - box_height - 20;
         
-        // 이름표 박스 렌더링 (이름이 존재할 때만)
+        // 이름표 박스 렌더링
         if (speaker_name != "") {
             draw_set_color(c_black);
             draw_set_alpha(0.85);
@@ -41,7 +41,7 @@ if (global.dialogue_active == true) {
             draw_set_color(c_white);
         }
         
-        // 메인 대사 박스 렌더링
+        // 메인 대사 박스
         draw_set_color(c_black);
         draw_set_alpha(0.85);
         draw_roundrect(box_x, box_y, box_x + box_width, box_y + box_height, false);
@@ -50,7 +50,7 @@ if (global.dialogue_active == true) {
         draw_set_alpha(1.0);
         draw_roundrect(box_x, box_y, box_x + box_width, box_y + box_height, true);
         
-        // 텍스트 설정 및 출력
+        // 텍스트 폰트 설정
         var lg_fnt = asset_get_index("fnt_large");
         if (lg_fnt == -1) lg_fnt = asset_get_index("fnt_main");
         if (lg_fnt != -1) draw_set_font(lg_fnt);
@@ -58,7 +58,20 @@ if (global.dialogue_active == true) {
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
         
-        draw_text_ext(box_x + 40, box_y + 40, speaker_text, -1, box_width - 80);
+        // 타이핑 이펙트: 현재 위치까지만 잘라서 출력
+        var display_text = string_copy(speaker_text, 1, global.typing_pos);
+        draw_text_ext(box_x + 40, box_y + 40, display_text, -1, box_width - 80);
+        
+        // 타이핑 완료 시 깜빡이는 ▼ 프롬프트 표시
+        if (global.typing_done) {
+            // 0.5초 간격으로 깜빡임 (30프레임 기준)
+            if ((current_time div 500) mod 2 == 0) {
+                draw_set_halign(fa_right);
+                draw_set_valign(fa_bottom);
+                draw_set_color(c_white);
+                draw_text(box_x + box_width - 30, box_y + box_height - 15, "▼");
+            }
+        }
     }
 }
 
@@ -69,7 +82,6 @@ if (global.inv_state > 0) {
     var inv_x = (1280 - inv_w) / 2;
     var inv_y = (720 - inv_h) / 2;
     
-    // 메인 인벤토리 박스 렌더링
     draw_set_color(c_black);
     draw_set_alpha(0.85);
     draw_roundrect(inv_x, inv_y, inv_x + inv_w, inv_y + inv_h, false);
@@ -90,7 +102,6 @@ if (global.inv_state > 0) {
         draw_text(inv_x + 50, inv_y + 80, "(텅 비어있다)");
         draw_set_color(c_white);
     } else {
-        // 아이템 목록 렌더링
         for (var i = 0; i < item_count; i++) {
             var my_item = global.inventory[i];
             var draw_pos_y = inv_y + 80 + (i * 35);
@@ -98,7 +109,6 @@ if (global.inv_state > 0) {
             if (i == global.inv_cursor) {
                 draw_set_color(c_yellow);
                 
-                // 현재 상태에 따른 커서 표시
                 if (global.inv_state == 1) {
                     draw_text(inv_x + 30, draw_pos_y, "->");
                 } else {
@@ -109,7 +119,6 @@ if (global.inv_state > 0) {
                 draw_text(inv_x + 60, draw_pos_y, my_item.name);
                 draw_set_color(c_white);
                 
-                // 아이템 상세 설명 출력
                 if (global.inv_state == 1) {
                     draw_set_halign(fa_center);
                     draw_text(inv_x + (inv_w / 2), inv_y + inv_h - 40, my_item.desc);
@@ -121,7 +130,7 @@ if (global.inv_state > 0) {
             }
         }
         
-        // 인벤토리 State 2: 행동 선택 메뉴 렌더링
+        // State 2: 행동 선택 메뉴
         if (global.inv_state == 2) {
             var action_w = 350;
             var action_h = 80;
@@ -151,4 +160,14 @@ if (global.inv_state > 0) {
             }
         }
     }
+}
+
+// ========================== 화면 전환 오버레이 ==========================
+// 가장 마지막에 그려야 모든 UI 위를 덮음
+if (global.transition_active) {
+    draw_set_color(c_black);
+    draw_set_alpha(global.transition_alpha);
+    draw_rectangle(0, 0, 1280, 720, false);
+    draw_set_alpha(1.0);
+    draw_set_color(c_white);
 }
