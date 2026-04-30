@@ -8,6 +8,12 @@ if (global._load_pending && instance_exists(Obj_char)) {
     global._load_pending = false;
 }
 
+// 첫 날(LP-138) 스토리 이벤트 트리거 (NEW GAME 직후)
+if (global.GetFlag("trigger_first_story") && room != Room_title && !global.dialogue_active) {
+    global.SetFlag("trigger_first_story", false);
+    global.CheckStoryEvent();
+}
+
 // 화면 전환 처리
 if (global.transition_active) {
     if (global.transition_phase == 1) {

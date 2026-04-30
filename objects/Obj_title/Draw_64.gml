@@ -20,7 +20,7 @@ if (sm_fnt != -1) draw_set_font(sm_fnt);
 draw_set_color(c_gray);
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
-draw_text(1280 / 2, 260, "- A Pixel Adventure -");
+draw_text(1280 / 2, 260, "- The Fuse -");
 
 // 메뉴 박스 (원자 컴포넌트)
 var menu_w = 300;

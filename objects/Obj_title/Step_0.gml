@@ -28,6 +28,8 @@ if (keyboard_check_pressed(ord("Z"))) {
             // NEW GAME
             global.NewGame();
             room_goto(Room1);
+            // 첫 날(LP-138) 스토리 이벤트 예약
+            global.SetFlag("trigger_first_story", true);
         }
         else if (cursor == 1) {
             // CONTINUE → 로드 슬롯 선택 메뉴 열기

@@ -197,6 +197,70 @@ if (global.sys_active) {
     }
 }
 
+// ========================== 인게임 HUD ==========================
+// 타이틀 화면이 아닐 때만 표시
+if (room != Room_title && !global.sys_active) {
+    var sm_fnt = asset_get_index("fnt_main");
+    if (sm_fnt != -1) draw_set_font(sm_fnt);
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    
+    var hud_x = 20;
+    var hud_y = 15;
+    
+    // 반투명 HUD 배경 박스
+    draw_set_color(c_black);
+    draw_set_alpha(0.5);
+    draw_roundrect(hud_x - 5, hud_y - 5, hud_x + 250, hud_y + 90, false);
+    draw_set_alpha(1.0);
+    
+    // --- 날짜 표시 ---
+    draw_set_color(c_ltgray);
+    draw_text(hud_x + 5, hud_y, "LP-" + string(global.day));
+    
+    // --- 에너지 바 ---
+    var bar_x = hud_x + 5;
+    var bar_y = hud_y + 25;
+    var bar_w = 200;
+    var bar_h = 14;
+    var energy_ratio = global.energy / global.max_energy;
+    
+    // 배경 (어두운 바)
+    draw_set_color(c_dkgray);
+    draw_roundrect(bar_x, bar_y, bar_x + bar_w, bar_y + bar_h, false);
+    
+    // 에너지 바 (초록→빨강 그라데이션)
+    if (energy_ratio > 0) {
+        var bar_color = merge_color(c_red, c_lime, energy_ratio);
+        draw_set_color(bar_color);
+        draw_roundrect(bar_x, bar_y, bar_x + (bar_w * energy_ratio), bar_y + bar_h, false);
+    }
+    
+    // 에너지 텍스트
+    draw_set_color(c_white);
+    draw_text(bar_x + bar_w + 8, bar_y - 2, string(global.energy));
+    
+    // --- 별사리풀 보유량 ---
+    draw_set_color(make_color_rgb(180, 130, 255)); // 보라색
+    draw_text(hud_x + 5, hud_y + 48, "★ " + string(global.inventory_grass));
+    
+    // --- 코어 파워 ---
+    var core_color = c_lime;
+    if (global.core_power < 30) core_color = c_red;
+    else if (global.core_power < 60) core_color = c_yellow;
+    
+    draw_set_color(core_color);
+    draw_text(hud_x + 80, hud_y + 48, "CORE: " + string(floor(global.core_power)) + "%");
+    
+    // --- 개화 프로토콜 진행률 (소수점 1자리) ---
+    if (global.bloom_percent > 0) {
+        draw_set_color(make_color_rgb(255, 200, 100));
+        draw_text(hud_x + 5, hud_y + 70, "BLOOM: " + string(floor(global.bloom_percent * 10) / 10) + "%");
+    }
+    
+    draw_set_color(c_white);
+}
+
 // ========================== 화면 전환 오버레이 ==========================
 if (global.transition_active) {
     draw_set_color(c_black);
