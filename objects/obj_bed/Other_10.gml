@@ -13,6 +13,14 @@ if (slept_today) {
     exit;
 }
 
+// 오늘 아무것도 안 하고 잠드는 것 방지
+if (!global.GetFlag("daily_action_done")) {
+    global.ShowDialogue([
+        { name: "", text: "오늘 하루는 너무 무의미하게 지나갔다.\n이대로 잘 수는 없다. 최소한 들판에 나가보거나 정제기를 돌리자." }
+    ]);
+    exit;
+}
+
 // 화면 전환 효과 (페이드아웃 → 같은 룸으로 다시 → 페이드인)
 // 이 전환 과정에서 하루가 넘어감
 slept_today = true;

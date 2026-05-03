@@ -22,6 +22,8 @@ global.inventory_grass -= grass_used;
 global.core_power += actual_gain;
 if (global.core_power > 100) global.core_power = 100;
 
+global.SetFlag("daily_action_done", true); // 행동 완료
+
 global.ShowDialogue([
     { name: "", text: "건조기가 열을 뿜고,\n정제기가 얇은 보랏빛 알갱이를 토해 낸다." },
     { name: "", text: "축전조의 수치가 조금씩 올라간다.\n숫자가 올라가는 것만으로 마음이 놓이는 기분을,\n나는 오래전에 배웠다." },

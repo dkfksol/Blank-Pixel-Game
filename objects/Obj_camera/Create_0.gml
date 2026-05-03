@@ -9,9 +9,9 @@ view_visible[0] = true;
 // 2. 따라다닐 대상
 target = Obj_char;
 
-// 3. 표시할 화면(카메라) 가로/세로 해상도 (훨씬 넓은 시야 / 줌아웃 효과)
-camWidth = 1920;
-camHeight = 1080;
+// 3. 표시할 화면(카메라) 가로/세로 해상도 (더 가깝고 몰입감 있는 줌인 뷰)
+camWidth = 1280;
+camHeight = 720;
 
 // 4. 시작할 때 플레이어를 즉시 찾아서 그 위치로 카메라 중심을 둡니다.
 if (instance_exists(target)) {

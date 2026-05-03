@@ -38,3 +38,14 @@ for (var i = 0; i < spawn_count; i++) {
 }
 
 show_debug_message("별사리풀 " + string(instance_number(obj_star_grass)) + "개 스폰 완료");
+
+// LP-138 전용: 자율 드론 생성 (아직 파괴되지 않음)
+if (global.day == 138) {
+    if (!instance_exists(obj_drone)) {
+        // 플레이어 근처에 스폰
+        var dx = instance_exists(Obj_char) ? Obj_char.x + 30 : room_width / 2;
+        var dy = instance_exists(Obj_char) ? Obj_char.y + 30 : room_height / 2;
+        instance_create_layer(dx, dy, "Instances", obj_drone);
+        show_debug_message("드론 스폰 완료 (자율 채집 모드)");
+    }
+}

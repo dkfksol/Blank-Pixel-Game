@@ -145,7 +145,17 @@ global.CheckStoryEvent = function() {
         var _key = string(global.day);
         if (!global.GetFlag("story_" + _key)) {
             global.SetFlag("story_" + _key, true);
-            global.ShowDialogue(ds_map_find_value(global.story_logs, global.day));
+            
+            if (global.day == 139) {
+                // 특별 연출: 드론 추락 컷신 트리거
+                if (instance_exists(obj_broken_drone)) {
+                    obj_broken_drone.TriggerCrash();
+                } else {
+                    global.ShowDialogue(ds_map_find_value(global.story_logs, 139));
+                }
+            } else {
+                global.ShowDialogue(ds_map_find_value(global.story_logs, global.day));
+            }
             return true;
         }
     }
@@ -180,7 +190,10 @@ global.EndDay = function() {
     // 4. 에너지 회복
     global.energy = global.max_energy;
     
-    // 5. 스토리 이벤트 체크
+    // 5. 일일 행동 플래그 초기화 (다음 날에는 새로 행동해야 잘 수 있음)
+    global.SetFlag("daily_action_done", false);
+    
+    // 6. 스토리 이벤트 체크
     global.CheckStoryEvent();
 }
 
@@ -471,9 +484,10 @@ global.LoadGame = function(_slot) {
     }
     
     var json_str = global._ReadFileContents(global.GetSaveFileName(_slot));
+    var save;
     
     try {
-        var save = json_parse(json_str);
+        save = json_parse(json_str);
     } catch(e) {
         show_debug_message("세이브 파일 파싱 실패!");
         return false;
