@@ -8,8 +8,8 @@ if (state == "rack") {
     // 빈 랙이므로 종료
     draw_set_color(c_white);
     exit;
-} else if (state == "crashing") {
-    // 컷신: 추락 중인 드론
+} else if (state == "crashing" || state == "sparking") {
+    // 컷신: 랙 위에서 스파크를 튀기거나 추락 중인 드론
     var dx = x + shake_x;
     var dy = crash_y;
     
@@ -23,7 +23,7 @@ if (state == "rack") {
     draw_ellipse(dx + 4, dy - 8, dx + 14, dy - 4, false);
     
     // 치명적 고장 스파크
-    if (crash_timer > 0 && random(100) < 40) {
+    if (random(100) < 40) {
         draw_set_color(c_yellow);
         draw_circle(dx + random_range(-10, 10), dy + random_range(-5, 5), random_range(1, 3), false);
     }

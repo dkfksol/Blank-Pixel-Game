@@ -13,12 +13,22 @@ if (slept_today) {
     exit;
 }
 
-// 오늘 아무것도 안 하고 잠드는 것 방지
-if (!global.GetFlag("daily_action_done")) {
-    global.ShowDialogue([
-        { name: "", text: "오늘 하루는 너무 무의미하게 지나갔다.\n이대로 잘 수는 없다. 최소한 들판에 나가보거나 정제기를 돌리자." }
-    ]);
-    exit;
+// 수면 조건: 도화 코어 100% 충전 강제
+if (global.core_power < 100) {
+    // 에너지가 남았거나 정제할 풀이 있다면 잠들지 못함
+    if (global.energy >= 10 || global.inventory_grass > 0) {
+        global.ShowDialogue([
+            { name: "", text: "축전조가 아직 가득 차지 않았다.\n이대로 잠들면 불안해서 견딜 수 없을 것이다." },
+            { name: "", text: "남은 힘을 쥐어짜서라도 코어 전력을 100%까지 채워야 한다." }
+        ]);
+        exit;
+    } else {
+        // 더 이상 채울 수 있는 수단이 전혀 없을 때만 예외적 수면 허용
+        global.ShowDialogue([
+            { name: "", text: "축전조가 가득 차지 않았지만...\n더 이상 움직일 힘도, 정제할 풀도 없다." },
+            { name: "", text: "불안함을 안고 눈을 감을 수밖에 없다." }
+        ]);
+    }
 }
 
 // 화면 전환 효과 (페이드아웃 → 같은 룸으로 다시 → 페이드인)

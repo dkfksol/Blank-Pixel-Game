@@ -147,11 +147,17 @@ global.CheckStoryEvent = function() {
             global.SetFlag("story_" + _key, true);
             
             if (global.day == 139) {
-                // 특별 연출: 드론 추락 컷신 트리거
+                // 아침 대사만 출력 (아직 떨어지지 않음)
+                global.ShowDialogue([
+                    { name: "시스템", text: "LP-139. 건조-정제 진행." },
+                    { name: "", text: "드론이 풀을 옮기고, 건조기가 열을 뿜고,\n정제기가 얇은 보랏빛 알갱이를 토해 낸다." },
+                    { name: "", text: "축전조의 수치가 조금씩 올라간다.\n숫자가 올라가는 것만으로 마음이 놓이는 기분을,\n나는 오래전에 배웠다." },
+                    { name: "", text: "그때, 날카로운 금속성 울림이 방 한구석에서 들렸다." }
+                ]);
+                // 드론은 랙에서 스파크를 튀기며 대기 (플레이어가 직접 와서 봐야 추락)
                 if (instance_exists(obj_broken_drone)) {
-                    obj_broken_drone.TriggerCrash();
-                } else {
-                    global.ShowDialogue(ds_map_find_value(global.story_logs, 139));
+                    obj_broken_drone.state = "sparking";
+                    obj_broken_drone.crash_y = obj_broken_drone.y - 40;
                 }
             } else {
                 global.ShowDialogue(ds_map_find_value(global.story_logs, global.day));

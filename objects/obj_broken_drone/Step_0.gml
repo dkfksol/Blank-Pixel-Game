@@ -1,6 +1,9 @@
 /// @description 추락 연출 업데이트
 
-if (state == "crashing") {
+if (state == "sparking") {
+    // 상호작용 대기 상태 (랙 위에서 스파크를 튀기며 부들부들)
+    shake_x = random_range(-1, 1);
+} else if (state == "crashing") {
     // 텍스트(대화)가 열려있으면 연출 일시정지
     if (global.dialogue_active) return;
     
