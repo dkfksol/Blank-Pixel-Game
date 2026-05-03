@@ -1,4 +1,11 @@
 /// @description 카메라 설정 (에러 수정판)
+
+// 중복 생성 방지 (persistent 유지)
+if (instance_number(object_index) > 1) {
+    instance_destroy();
+    exit;
+}
+
 persistent = true; // ★핵심: 룸이 바뀌어도 카메라가 파괴되지 않고 다음 룸으로 따라갑니다.
 
 // 1. 혹시라도 룸 에디터에서 [Visible] 체크가 누락되었을 경우를 대비해

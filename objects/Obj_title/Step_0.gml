@@ -27,7 +27,7 @@ if (keyboard_check_pressed(ord("Z"))) {
         if (cursor == 0) {
             // NEW GAME
             global.NewGame();
-            room_goto(Room1);
+            room_goto(Room2); // 첫 시작을 집(Room1)이 아닌 들판(Room2)에서 시작
             // 첫 날(LP-138) 스토리 이벤트 예약
             global.SetFlag("trigger_first_story", true);
         }

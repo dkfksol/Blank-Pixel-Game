@@ -6,7 +6,6 @@
   "inheritCreationOrder":false,
   "inheritLayers":false,
   "instanceCreationOrder":[
-    {"name":"inst_30C01065","path":"rooms/Room1/Room1.yy",},
     {"name":"inst_3E1C3103","path":"rooms/Room1/Room1.yy",},
     {"name":"inst_55F54F53","path":"rooms/Room1/Room1.yy",},
     {"name":"inst_34E7ED09","path":"rooms/Room1/Room1.yy",},
@@ -26,7 +25,6 @@
   "isDnd":false,
   "layers":[
     {"$GMRInstanceLayer":"","%Name":"Instances","depth":0,"effectEnabled":true,"effectType":null,"gridX":32,"gridY":32,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"instances":[
-        {"$GMRInstance":"v4","%Name":"inst_30C01065","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_30C01065","objectId":{"name":"Obj_char","path":"objects/Obj_char/Obj_char.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":-0.1512165,"scaleX":0.5,"scaleY":0.5,"x":431.53964,"y":304.9565,},
         {"$GMRInstance":"v4","%Name":"inst_3E1C3103","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_3E1C3103","objectId":{"name":"Obj_camera","path":"objects/Obj_camera/Obj_camera.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":640.0,"y":0.0,},
         {"$GMRInstance":"v4","%Name":"inst_55F54F53","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_55F54F53","objectId":{"name":"Obj_npc","path":"objects/Obj_npc/Obj_npc.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":608.0,"y":288.0,},
         {"$GMRInstance":"v4","%Name":"inst_34E7ED09","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_34E7ED09","objectId":{"name":"Obj_wall","path":"objects/Obj_wall/Obj_wall.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":0.5,"scaleY":0.5,"x":320.0,"y":288.0,},

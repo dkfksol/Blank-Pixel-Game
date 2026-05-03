@@ -8,9 +8,14 @@ if (global._load_pending && instance_exists(Obj_char)) {
     global._load_pending = false;
 }
 
-// 첫 날(LP-138) 스토리 이벤트 트리거 (NEW GAME 직후)
-if (global.GetFlag("trigger_first_story") && room != Room_title && !global.dialogue_active) {
+// 첫 날(LP-138) 스토리 이벤트 트리거 (NEW GAME 직후 들판에 도착했을 때)
+if (global.GetFlag("trigger_first_story") && room == Room2 && !global.dialogue_active) {
     global.SetFlag("trigger_first_story", false);
+    
+    // 시작 방이 Room2이므로 에디터에 배치되어 있지 않은 캐릭터/카메라를 동적 생성
+    if (!instance_exists(Obj_char)) instance_create_layer(400, 300, "Instances", Obj_char);
+    if (!instance_exists(Obj_camera)) instance_create_layer(400, 300, "Instances", Obj_camera);
+    
     global.CheckStoryEvent();
 }
 

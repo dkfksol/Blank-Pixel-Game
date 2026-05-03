@@ -76,28 +76,25 @@ y += vspd;
 
 // 5. 상호작용 로직 (Z키)
 if (keyboard_check_pressed(ord("Z"))) {
-    var center_x = (bbox_left + bbox_right) / 2;
-    var center_y = (bbox_top + bbox_bottom) / 2;
-    
-    // 플레이어의 시선이 머무는 도착점 계산 (전방 32픽셀)
-    var sight_dist = 32; 
-    var target_x = center_x + lengthdir_x(sight_dist, facing_dir);
-    var target_y = center_y + lengthdir_y(sight_dist, facing_dir);
-    
     var target_obj = noone;
     var min_dist = 9999;
     
-    // 시선 도착점에 가장 가까운 상호작용 객체 탐색
+    // 플레이어의 현재 좌표와 시선(facing_dir)을 기준으로 탐색
     with (Obj_interactable) {
-        var obj_cx = (sprite_index != -1) ? (bbox_left + bbox_right) / 2 : x;
-        var obj_cy = (sprite_index != -1) ? (bbox_top + bbox_bottom) / 2 : y;
+        var dist = point_distance(other.x, other.y, x, y);
         
-        var dist = point_distance(target_x, target_y, obj_cx, obj_cy);
-        
-        // 반경 32픽셀 이내의 객체 중 가장 가까운 객체를 선택
-        if (dist <= 32 && dist < min_dist) {
-            min_dist = dist;
-            target_obj = id;
+        // 반경 60픽셀 이내에 있는 오브젝트만 검사
+        if (dist <= 60) {
+            // 오브젝트가 플레이어를 기준으로 어느 방향에 있는지 계산
+            var dir_to_obj = point_direction(other.x, other.y, x, y);
+            // 플레이어의 시선과 오브젝트 방향의 각도 차이 (-180 ~ 180)
+            var angle_diff = abs(angle_difference(other.facing_dir, dir_to_obj));
+            
+            // 시야각 90도(좌우 45도) 이내에 있으면서 가장 가까운 객체 선택
+            if (angle_diff <= 90 && dist < min_dist) {
+                min_dist = dist;
+                target_obj = id;
+            }
         }
     }
     
