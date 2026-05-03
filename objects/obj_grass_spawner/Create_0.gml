@@ -5,24 +5,24 @@ with (obj_star_grass) {
     instance_destroy();
 }
 
-// 랜덤 개수 (5~8개) 스폰
-var spawn_count = irandom_range(5, 8);
-var margin = 64; // 룸 가장자리 여유
+// 들판을 가득 채우도록 30~50개의 별사리풀 스폰
+var spawn_count = irandom_range(30, 50);
+var margin = 48; // 룸 가장자리 여유
 
 for (var i = 0; i < spawn_count; i++) {
     var attempts = 0;
     var placed = false;
     
-    while (!placed && attempts < 30) {
+    while (!placed && attempts < 50) {
         var sx = irandom_range(margin, room_width - margin);
         var sy = irandom_range(margin, room_height - margin);
         
         // 벽과 겹치지 않는지 확인
         if (!place_meeting(sx, sy, Obj_wall)) {
-            // 다른 별사리풀과 너무 가깝지 않은지 (최소 48픽셀 간격)
+            // 다른 별사리풀과 너무 가깝지 않은지 (자연스러운 군락을 위해 간격을 24로 줄임)
             var too_close = false;
             with (obj_star_grass) {
-                if (point_distance(x, y, sx, sy) < 48) {
+                if (point_distance(x, y, sx, sy) < 24) {
                     too_close = true;
                     break;
                 }

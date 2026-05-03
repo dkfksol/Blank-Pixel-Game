@@ -25,15 +25,16 @@ if (!global.GetFlag("daily_action_done")) {
 // 이 전환 과정에서 하루가 넘어감
 slept_today = true;
 
-// 잠들기 대사
-global.ShowDialogue([
-    { name: "", text: "쉴 수 있는 시간은 길지 않다.\n그래도 지금은 눈을 감는다." },
-    { name: "시스템", text: "하루가 지나갑니다..." }
-]);
+// 하루 마감 처리 및 스토리 이벤트 트리거
+var story_triggered = global.EndDay();
 
-// 화면 전환으로 하루 마감 연출
-// TransitionToRoom 자체가 같은 룸으로 이동 → 별사리풀 리스폰
-global.EndDay();
+if (!story_triggered) {
+    // 잠들기 대사 (스토리 이벤트가 없을 때만 출력)
+    global.ShowDialogue([
+        { name: "", text: "쉴 수 있는 시간은 길지 않다.\n그래도 지금은 눈을 감는다." },
+        { name: "시스템", text: "하루가 지나갑니다..." }
+    ]);
+}
 
 // 게임 오버 체크
 global.CheckGameOver();

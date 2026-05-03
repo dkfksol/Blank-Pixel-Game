@@ -193,8 +193,8 @@ global.EndDay = function() {
     // 5. 일일 행동 플래그 초기화 (다음 날에는 새로 행동해야 잘 수 있음)
     global.SetFlag("daily_action_done", false);
     
-    // 6. 스토리 이벤트 체크
-    global.CheckStoryEvent();
+    // 6. 스토리 이벤트 체크 (결과 반환)
+    return global.CheckStoryEvent();
 }
 
 /// 게임 오버 체크 (core_power가 0이면 게임오버)

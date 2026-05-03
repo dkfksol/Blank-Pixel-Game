@@ -16,6 +16,12 @@ if (global.bloom_percent >= 100) {
         { name: "시스템", text: "[개화 프로토콜] " + bloom_str + "%\n[코어 전력] " + core_str + "%" },
         { name: "", text: "코어의 외피가 미세하게 진동한다.\n무언가가 내부에서 자라고 있다." }
     ]);
+} else if (global.core_power >= 100) {
+    global.ShowDialogue([
+        { name: "", text: "축전조의 불빛이 안정적으로 빛난다." },
+        { name: "시스템", text: "[코어 전력] 100%\n[개화 진행] " + bloom_str + "%" },
+        { name: "", text: "전력이 꽉 찼다. 오늘 밤은 안전하게 버틸 수 있을 것이다." }
+    ]);
 } else {
     global.ShowDialogue([
         { name: "", text: "금속 꽃봉오리 같은 구조물이\n낮게 숨을 쉰다. 도화 코어." },
