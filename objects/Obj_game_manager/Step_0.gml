@@ -19,6 +19,20 @@ if (global.GetFlag("trigger_first_story") && room == Room2 && !global.dialogue_a
     global.CheckStoryEvent();
 }
 
+// 드론과 함께 귀환한 직후 (Room1에 도착했을 때)
+if (global.GetFlag("trigger_drone_return") && room == Room1 && !global.transition_active) {
+    global.SetFlag("trigger_drone_return", false);
+    
+    if (instance_exists(obj_broken_drone)) {
+        // 드론이 플레이어를 따라 방 안으로 들어온 뒤, 거치대로 슝 날아가는 연출 시작
+        if (instance_exists(Obj_char)) {
+            obj_broken_drone.x = Obj_char.x;
+            obj_broken_drone.crash_y = Obj_char.y - 20; // 플레이어 머리 위 높이
+        }
+        obj_broken_drone.state = "fly_to_rack";
+    }
+}
+
 // 화면 전환 처리
 if (global.transition_active) {
     if (global.transition_phase == 1) {

@@ -13,6 +13,8 @@ harvestable = true;
 // --- 타이밍 미니게임 변수 ---
 minigame_active = false;
 minigame_delay = 0;
+minigame_result_timer = 0; // 결과 확인(깜빡임) 대기 타이머
+minigame_result_dist = 0;  // 결과 판정용 거리 저장
 cursor_pos = 0;
-cursor_spd = 1.5; // 커서 이동 속도 (조금 더 느리게 조절)
+cursor_spd = 2.8; // 커서 이동 속도 조정 (3.8에서 2.8로 살짝 감속)
 

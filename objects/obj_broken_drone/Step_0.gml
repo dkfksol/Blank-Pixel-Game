@@ -3,6 +3,19 @@
 if (state == "sparking") {
     // 상호작용 대기 상태 (랙 위에서 스파크를 튀기며 부들부들)
     shake_x = random_range(-1, 1);
+} else if (state == "fly_to_rack") {
+    // 플레이어와 함께 방에 들어온 뒤 거치대로 날아가는 연출
+    var _dist = point_distance(x, crash_y, rack_x, rack_y - 40);
+    
+    if (_dist > 4) {
+        var _dir = point_direction(x, crash_y, rack_x, rack_y - 40);
+        x += lengthdir_x(5, _dir);
+        crash_y += lengthdir_y(5, _dir);
+    } else {
+        x = rack_x;
+        crash_y = rack_y - 40;
+        state = "sparking"; // 거치대 도착 시 스파크 상태로 전환
+    }
 } else if (state == "crashing") {
     // 텍스트(대화)가 열려있으면 연출 일시정지
     if (global.dialogue_active) return;

@@ -56,4 +56,22 @@ if (state == 0) {
     } else {
         state = 0;
     }
+} else if (state == "return_home") {
+    // 플레이어가 귀환 명령을 내린 상태
+    if (global.dialogue_active) return; // 대화 중엔 대기
+    
+    if (instance_exists(Obj_door)) {
+        var _door = instance_nearest(x, y, Obj_door);
+        move_towards_point(_door.x, _door.y, 4);
+        
+        // 문에 도착하면 플레이어와 함께 룸 전환
+        if (point_distance(x, y, _door.x, _door.y) < 15) {
+            var _dest_x = variable_instance_exists(_door, "target_x") ? _door.target_x : -1;
+            var _dest_y = variable_instance_exists(_door, "target_y") ? _door.target_y : -1;
+            
+            global.SetFlag("trigger_drone_return", true);
+            global.TransitionToRoom(_door.target_room, _dest_x, _dest_y);
+            instance_destroy(); // 들판 드론 삭제
+        }
+    }
 }
