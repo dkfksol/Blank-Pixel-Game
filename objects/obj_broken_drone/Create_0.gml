@@ -3,9 +3,13 @@
 // 스파크 타이머
 spark_timer = random(60);
 
+// 상태 결정: 드론이 아직 살아있는 동안에는 빈 랙
 state = "broken";
-if (global.day == 138) state = "rack";
-if (global.day == 139 && !global.GetFlag("drone_scavenged")) state = "sparking";
+if (global.day <= 142 && !global.GetFlag("drone_destroyed")) {
+    state = "rack"; // 드론이 들판에 있으므로 빈 랙
+} else if (global.day == 143 && !global.GetFlag("drone_scavenged")) {
+    state = "sparking"; // 사고 당일: 스파크 대기
+}
 
 crash_timer = 0;
 crash_y = y - 40;
@@ -20,19 +24,8 @@ TriggerCrash = function() {
     crash_timer = 0;
     shake_x = 0;
     
-    // 만약 139일차 아침이라면 LP-139 텍스트 출력
-    if (global.day == 139) {
-        global.ShowDialogue([
-            { name: "시스템", text: "LP-139. 건조-정제 진행." },
-            { name: "", text: "드론이 풀을 옮기고, 건조기가 열을 뿜고,\n정제기가 얇은 보랏빛 알갱이를 토해 낸다." },
-            { name: "", text: "축전조의 수치가 조금씩 올라간다.\n숫자가 올라가는 것만으로 마음이 놓이는 기분을,\n나는 오래전에 배웠다." },
-            { name: "", text: "그때, 날카로운 금속성 울림이 방 한구석에서 들렸다." }
-        ]);
-    } else {
-        // 138일차 귀환 직후에 상호작용해서 떨어지는 경우
-        global.ShowDialogue([
-            { name: "", text: "거치대로 날아간 드론의 상태가 이상하다.\n가까이 다가가 상태를 확인하려 손을 뻗은 순간..." },
-            { name: "", text: "날카로운 금속성 울림이 방 안을 울렸다." }
-        ]);
-    }
+    global.ShowDialogue([
+        { name: "", text: "거치대로 날아간 드론의 상태가 이상하다.\n가까이 다가가 상태를 확인하려 손을 뻗은 순간..." },
+        { name: "", text: "날카로운 금속성 울림이 방 안을 울렸다." }
+    ]);
 }

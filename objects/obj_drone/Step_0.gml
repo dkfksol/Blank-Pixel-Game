@@ -1,7 +1,13 @@
 /// @description 자율 채집 로직
 
-// LP-138이 아니면 파괴 (고장났거나 스토리상 존재하지 않음)
-if (global.day != 138) {
+// 드론 파괴 플래그가 켜졌으면 즉시 파괴 (귀환 후 다시 방에 들어와도 생성 안 됨)
+if (global.GetFlag("drone_destroyed")) {
+    instance_destroy();
+    exit;
+}
+
+// LP-138~142까지 드론 생존 (5일간 유대감 형성)
+if (global.day > 142) {
     instance_destroy();
     exit;
 }
@@ -50,6 +56,10 @@ if (state == 0) {
         harvest_timer--;
         if (harvest_timer <= 0) {
             global.inventory_grass += 1;
+            // 일일 채집 카운터 누적 (드론 자동 채집분)
+            var _cnt = global.GetFlag("daily_harvest_count");
+            if (_cnt == false) _cnt = 0;
+            global.SetFlag("daily_harvest_count", _cnt + 1);
             instance_destroy(target_grass);
             state = 0;
         }

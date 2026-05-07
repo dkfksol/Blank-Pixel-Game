@@ -93,24 +93,43 @@ ds_map_set(global.story_logs, 138, [
     { name: "", text: "그래서 오늘도 나는 들판을 뒤집는다.\n마치 내가 여기 있는 이유가, 이것뿐인 사람처럼." }
 ]);
 
-// LP-139: 드론 사고
+// LP-139: 드론과의 유대 1 - 함께하는 채집
 ds_map_set(global.story_logs, 139, [
-    { name: "", text: "LP-139. 건조-정제 진행." },
-    { name: "", text: "드론이 풀을 옮기고, 건조기가 열을 뿜고,\n정제기가 얇은 보랏빛 알갱이를 토해 낸다." },
-    { name: "", text: "그때, 날카로운 금속성 울림이 뒤를 친다." },
-    { name: "", text: "드론의 한쪽 날개가 보관 랙에 걸렸다.\n균형을 잃은 기체가 공중에서 한 번 흔들리더니\n그대로 바닥으로 곤두박질쳤다." },
-    { name: "", text: "나는 한동안 움직이지 못했다.\n내가 잃은 것은 단순한 기계가 아니었다." },
-    { name: "", text: "이 행성에서 '편함'이라 부를 수 있는\n마지막 한 조각이었다." },
-    { name: "", text: "\"괜찮아… 괜찮아. 아직.\"" }
+    { name: "", text: "LP-139. 채집 2일차." },
+    { name: "", text: "드론이 먼저 들판으로 나갔다.\n기다리라고 말한 적 없는데, 항상 먼저 가 있다." },
+    { name: "", text: "나는 그것을 '성실'이라고 부르기로 했다.\n이 행성에서 나보다 더 성실한 것은 드론뿐이었다." }
 ]);
 
-// LP-140: 외부 점검 + 통신 수신
+// LP-140: 드론과의 유대 2 - 습관을 기억하는 기계
 ds_map_set(global.story_logs, 140, [
     { name: "", text: "LP-140. 외부 점검." },
-    { name: "", text: "땅은 조용하고, 돔 밖은 더 조용하다.\n가끔은 조용함이 소리처럼 들린다." },
-    { name: "", text: "그때 통신 장치가 깜박인다." },
+    { name: "", text: "드론이 풀을 옮기고, 건조기가 열을 뿜고,\n정제기가 얇은 보랏빛 알갱이를 토해 낸다." },
+    { name: "", text: "기계는 내 말을 이해한다기보다,\n나의 습관을 기억한다." },
+    { name: "", text: "이 행성에서 나를 기억하는 것은\n드론뿐이었다." }
+]);
+
+// LP-141: 드론과의 유대 3 - 통신 수신
+ds_map_set(global.story_logs, 141, [
+    { name: "", text: "LP-141. 좌표 확인." },
+    { name: "", text: "통신 장치가 깜박인다.\n빛이 들어오면, 나는 늘 먼저 숨을 멈춘다." },
     { name: "시스템", text: "[수신] 자동 비콘 핑: 유효\n[발신] DOHWA CORE / FIELD NODE 03\n[내용] 귀환 비콘 출력 저하. 좌표 송신. 유지 요청." },
     { name: "", text: "'귀환'이라는 단어는 오래된 상처를 건드리는\n방식으로 반짝인다.\n귀환은 늘 누군가에게만 허락된 말이었다." }
+]);
+
+// LP-142: 드론과의 유대 4 - 마지막 날
+ds_map_set(global.story_logs, 142, [
+    { name: "", text: "LP-142. 정비일." },
+    { name: "", text: "드론의 날개가 살짝 느려졌다.\n프로펠러에서 소리가 난다. 예전에 없던 소리." },
+    { name: "", text: "나는 도구를 꺼내 축을 조여 보았지만\n금속의 피로는 도구로 고칠 수 없는 종류다." },
+    { name: "", text: "드론은 개의치 않은 듯 다시 날개를 돌린다.\n그 모습이, 내가 매일 아침 일어나는 방식과 닮았다." }
+]);
+
+// LP-143: 드론 사고 (기존 LP-139 스토리 이동)
+ds_map_set(global.story_logs, 143, [
+    { name: "", text: "LP-143. 건조-정제 진행." },
+    { name: "", text: "드론이 풀을 옮기고, 건조기가 열을 뿜고,\n정제기가 얇은 보랏빛 알갱이를 토해 낸다." },
+    { name: "", text: "축전조의 수치가 조금씩 올라간다.\n숫자가 올라가는 것만으로 마음이 놓이는 기분을,\n나는 오래전에 배웠다." },
+    { name: "", text: "그때, 날카로운 금속성 울림이 방 한구석에서 들렸다." }
 ]);
 
 // bloom 83% 이벤트
@@ -137,7 +156,6 @@ ds_map_set(global.story_logs, "bloom_100", [
     { name: "", text: "이 행성에는 한때 다른 하늘이 있었다는 걸\n기억해 줬으면 한다.\"" },
     { name: "", text: "\"…하늘이, 다시 생겨.\"" }
 ]);
-
 /// 스토리 이벤트 체크 (하루 마감 시 호출)
 global.CheckStoryEvent = function() {
     // 날짜 기반 이벤트
@@ -146,15 +164,11 @@ global.CheckStoryEvent = function() {
         if (!global.GetFlag("story_" + _key)) {
             global.SetFlag("story_" + _key, true);
             
-            if (global.day == 139) {
-                // 아침 대사만 출력 (아직 떨어지지 않음)
-                global.ShowDialogue([
-                    { name: "시스템", text: "LP-139. 건조-정제 진행." },
-                    { name: "", text: "드론이 풀을 옮기고, 건조기가 열을 뿜고,\n정제기가 얇은 보랏빛 알갱이를 토해 낸다." },
-                    { name: "", text: "축전조의 수치가 조금씩 올라간다.\n숫자가 올라가는 것만으로 마음이 놓이는 기분을,\n나는 오래전에 배웠다." },
-                    { name: "", text: "그때, 날카로운 금속성 울림이 방 한구석에서 들렸다." }
-                ]);
+            if (global.day == 143) {
+                // LP-143: 아침 대사만 출력 (아직 떨어지지 않음)
+                global.ShowDialogue(ds_map_find_value(global.story_logs, 143));
                 // 드론은 랙에서 스파크를 튀기며 대기 (플레이어가 직접 와서 봐야 추락)
+                global.SetFlag("drone_destroyed", true); // 더 이상 들판에 드론 생성 금지
                 if (instance_exists(obj_broken_drone)) {
                     obj_broken_drone.state = "sparking";
                     obj_broken_drone.crash_y = obj_broken_drone.y - 40;
@@ -196,8 +210,9 @@ global.EndDay = function() {
     // 4. 에너지 회복
     global.energy = global.max_energy;
     
-    // 5. 일일 행동 플래그 초기화 (다음 날에는 새로 행동해야 잘 수 있음)
+    // 5. 일일 행동 플래그 및 채집 카운터 초기화
     global.SetFlag("daily_action_done", false);
+    global.SetFlag("daily_harvest_count", 0);
     
     // 6. 스토리 이벤트 체크 (결과 반환)
     return global.CheckStoryEvent();

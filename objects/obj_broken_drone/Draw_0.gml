@@ -8,6 +8,29 @@ if (state == "rack") {
     // 빈 랙이므로 종료
     draw_set_color(c_white);
     exit;
+} else if (state == "fly_to_rack") {
+    // 귀환 중인 정상 드론 렌더링 (부서진 형태가 아닌 깨끗한 드론!)
+    var dx = x + shake_x;
+    var dy = crash_y;
+    
+    // 둥둥 떠다니는 효과
+    var hover_y = sin(degtorad(current_time / 10)) * 2;
+    
+    // 본체 (깨끗한 흰색)
+    draw_set_color(make_color_rgb(220, 220, 230));
+    draw_roundrect(dx - 8, dy - 6 + hover_y, dx + 8, dy + 6 + hover_y, false);
+    
+    // 프로펠러 (정상 작동)
+    draw_set_color(make_color_rgb(150, 150, 160));
+    draw_ellipse(dx - 14, dy - 8 + hover_y, dx - 4, dy - 4 + hover_y, false);
+    draw_ellipse(dx + 4, dy - 8 + hover_y, dx + 14, dy - 4 + hover_y, false);
+    
+    // 파란색 센서 (정상)
+    draw_set_color(make_color_rgb(50, 200, 255));
+    draw_circle(dx + 3, dy + hover_y, 2, false);
+    
+    draw_set_color(c_white);
+    exit;
 } else if (state == "crashing" || state == "sparking") {
     // 컷신: 랙 위에서 스파크를 튀기거나 추락 중인 드론
     var dx = x + shake_x;

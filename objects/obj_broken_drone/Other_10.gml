@@ -1,12 +1,16 @@
 /// @description 고장난 드론 상호작용 (User Event 0)
 
 if (state == "rack") {
-    if (global.day == 138) {
+    if (global.day <= 142 && !global.GetFlag("drone_destroyed")) {
         global.ShowDialogue([
             { name: "", text: "드론 보관 랙이다.\n현재 드론은 들판에서 채집 임무 중이다." }
         ]);
     }
     exit;
+}
+
+if (state == "fly_to_rack") {
+    exit; // 비행 연출 중 무시
 }
 
 if (state == "sparking") {

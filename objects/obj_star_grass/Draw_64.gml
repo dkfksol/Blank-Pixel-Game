@@ -37,6 +37,12 @@ if (minigame_active) {
     
     if (show_cursor) {
         var cursor_px = bar_x + (bar_w * (cursor_pos / 100));
+        
+        // 커서 테두리 (검은색)
+        draw_set_color(c_black);
+        draw_rectangle(cursor_px - 6, bar_y - 10, cursor_px + 6, bar_y + bar_h + 10, false);
+        
+        // 커서 내부 (흰색)
         draw_set_color(c_white);
         draw_rectangle(cursor_px - 4, bar_y - 8, cursor_px + 4, bar_y + bar_h + 8, false);
     }

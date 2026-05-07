@@ -14,12 +14,20 @@ if (minigame_active) {
             
             if (minigame_result_dist <= p_width / 2) {
                 global.inventory_grass += 2;
+                // 일일 채집 카운터 누적
+                var _cnt = global.GetFlag("daily_harvest_count");
+                if (_cnt == false) _cnt = 0;
+                global.SetFlag("daily_harvest_count", _cnt + 2);
                 global.ShowDialogue([
                     { name: "", text: "온전한 형태로 채집했다.\n장갑에 전해지는 묵직한 감각." },
                     { name: "시스템", text: "별사리풀 +2 (Perfect!)\n에너지 -" + string(harvest_cost) }
                 ]);
             } else if (minigame_result_dist <= g_width / 2) {
                 global.inventory_grass += 1;
+                // 일일 채집 카운터 누적
+                var _cnt2 = global.GetFlag("daily_harvest_count");
+                if (_cnt2 == false) _cnt2 = 0;
+                global.SetFlag("daily_harvest_count", _cnt2 + 1);
                 global.ShowDialogue([
                     { name: "", text: "조심했지만 절반이 가루로 흩어졌다.\n아쉽지만 챙겨야 한다." },
                     { name: "시스템", text: "별사리풀 +1 (Good)\n에너지 -" + string(harvest_cost) }

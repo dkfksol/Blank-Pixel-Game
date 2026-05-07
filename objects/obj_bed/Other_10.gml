@@ -13,9 +13,36 @@ if (slept_today) {
     exit;
 }
 
-// 수면 조건: 도화 코어 100% 충전 강제
+// =============================================
+// 수면 조건 1: 최소 채집량 강제
+// 하루에 최소 5개의 별사리풀을 정제하거나 채집해야 잠들 수 있음
+// (코어가 이미 100%여도, 노동 자체가 생존의 루틴이므로)
+// =============================================
+var daily_harvested = global.GetFlag("daily_harvest_count");
+if (daily_harvested == false) daily_harvested = 0;
+
+if (daily_harvested < 5) {
+    // 에너지가 남아있으면 아직 일할 수 있다
+    if (global.energy >= 10) {
+        var remaining = 5 - daily_harvested;
+        global.ShowDialogue([
+            { name: "", text: "오늘 충분히 일하지 않았다.\n이대로 눈을 감으면 불안해서 견딜 수 없다." },
+            { name: "시스템", text: "최소 " + string(remaining) + "개의 별사리풀을 더 채집하세요.\n(오늘 채집량: " + string(floor(daily_harvested)) + "/5)" }
+        ]);
+        exit;
+    }
+    // 에너지가 없으면 강제 수면 (불안 대사)
+    global.ShowDialogue([
+        { name: "", text: "충분히 일하지 못했다.\n몸은 이미 한계다." },
+        { name: "", text: "불안함을 안고 눈을 감을 수밖에 없다." }
+    ]);
+}
+
+// =============================================
+// 수면 조건 2: 코어 전력 충전 강제
+// 에너지와 풀이 남아있다면 코어를 100%로 만들어야 잠들 수 있음
+// =============================================
 if (global.core_power < 100) {
-    // 에너지가 남았거나 정제할 풀이 있다면 잠들지 못함
     if (global.energy >= 10 || global.inventory_grass > 0) {
         global.ShowDialogue([
             { name: "", text: "축전조가 아직 가득 차지 않았다.\n이대로 잠들면 불안해서 견딜 수 없을 것이다." },

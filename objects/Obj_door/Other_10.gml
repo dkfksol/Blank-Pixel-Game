@@ -1,7 +1,7 @@
 /// @description 상호작용 시 부드러운 방 이동 (User Event 0)
 
-// 들판(Room2)에서 138일차에 집으로 돌아가려 할 때
-if (room == Room2 && global.day == 138 && instance_exists(obj_drone)) {
+// 들판(Room2)에서 드론이 살아있을 때 집으로 돌아가려 할 때
+if (room == Room2 && instance_exists(obj_drone) && !global.GetFlag("drone_destroyed")) {
     if (obj_drone.state == "return_home") exit; // 이미 부른 상태면 무시
     
     // 플레이어가 귀환 대사를 치고 드론을 부름
