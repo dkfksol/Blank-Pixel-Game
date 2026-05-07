@@ -13,6 +13,33 @@ if (slept_today) {
     exit;
 }
 
+// 침대 상태 경고 (열화 시스템)
+if (global.bed_quality < 30 && global.bed_quality > 0) {
+    global.ShowDialogue([
+        { name: "", text: "침대가 삐걱거린다.\n프레임이 휘어지기 시작했다.\n잠을 자도 개운하지 않을 것이다." },
+        { name: "시스템", text: "⚠ 침대 상태 불량 — 에너지 회복 70%\n(침대 수리: Z키로 침대에 다시 상호작용)" }
+    ]);
+} else if (global.bed_quality <= 0) {
+    // 침대가 완전히 망가짐 — 수리 분기
+    if (global.energy >= repair_cost) {
+        global.ShowDialogue([
+            { name: "", text: "침대의 프레임이 부러졌다.\n이대로는 누울 수도 없다." },
+            { name: "", text: "비틀어진 금속을 손으로 펴고,\n고정 볼트를 조여 본다." },
+            { name: "시스템", text: "침대 수리 완료! 에너지 -" + string(repair_cost) }
+        ]);
+        global.energy -= repair_cost;
+        global.bed_quality = 60;
+        exit; // 수리만 하고 잠들지는 않음
+    } else {
+        // 에너지 부족: 바닥에서 잠
+        global.ShowDialogue([
+            { name: "", text: "침대는 부서졌고, 고칠 힘도 없다.\n바닥에 등을 대고 눕는다." },
+            { name: "", text: "차갑다. 하지만 눈은 감긴다." }
+        ]);
+        // 바닥에서 자면 에너지 50%만 회복 (EndDay에서 bed_quality로 처리)
+    }
+}
+
 // =============================================
 // 수면 조건 1: 최소 채집량 강제
 // 하루에 최소 5개의 별사리풀을 정제하거나 채집해야 잠들 수 있음

@@ -34,6 +34,7 @@
     {"id":{"name":"obj_core","path":"objects/obj_core/obj_core.yy",},},
     {"id":{"name":"Obj_door","path":"objects/Obj_door/Obj_door.yy",},},
     {"id":{"name":"obj_drone","path":"objects/obj_drone/obj_drone.yy",},},
+    {"id":{"name":"obj_fox","path":"objects/obj_fox/obj_fox.yy",},},
     {"id":{"name":"Obj_game_manager","path":"objects/Obj_game_manager/Obj_game_manager.yy",},},
     {"id":{"name":"obj_grass_spawner","path":"objects/obj_grass_spawner/obj_grass_spawner.yy",},},
     {"id":{"name":"Obj_interactable","path":"objects/Obj_interactable/Obj_interactable.yy",},},

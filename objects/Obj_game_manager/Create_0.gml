@@ -64,6 +64,27 @@ global.core_power = 20;        // 도화 코어 유지 수치 (0~100)
 global.inventory_grass = 0;    // 별사리풀 보유량
 global.core_power_decay = 3;   // 매일 core_power 자연 감소량
 
+// ========================== 날씨/일일 이벤트 시스템 ==========================
+// weather: "clear", "sandstorm", "bountiful", "calm_wind", "red_sky"
+global.weather = "clear";
+// daily_event: "none", "refinery_malfunction", "comm_static", "footprints", "cold_night"
+global.daily_event = "none";
+// 날씨별 미니게임 속도 배율
+global.weather_speed_mult = 1.0;
+// 날씨별 별사리풀 스폰 배율
+global.weather_spawn_mult = 1.0;
+// 날씨 대사 출력 여부 (하루에 한 번)
+global.weather_announced = false;
+
+// ========================== 장비 열화 시스템 ==========================
+global.refinery_durability = 100;  // 정제기 내구도 (0이면 수리 필요)
+global.refinery_broken = false;    // 정제기 고장 여부
+global.bed_quality = 100;          // 침대 상태 (가끔 에너지 80%만 회복)
+
+// ========================== 여우 시스템 ==========================
+global.fox_trust = 0;              // 여우 친밀도 (0~100)
+global.fox_appeared = false;       // 오늘 여우가 나타났는가
+
 /// 개화 프로토콜 진행률 계산 (core_power 누적 기반)
 /// core_power가 일정 수준 이상 유지되면 bloom 상승
 global.bloom_percent = 0;
@@ -207,14 +228,100 @@ global.EndDay = function() {
     // 3. 날짜 증가
     global.day += 1;
     
-    // 4. 에너지 회복
-    global.energy = global.max_energy;
+    // 4. 에너지 회복 (침대 상태에 따라 변동)
+    if (global.bed_quality < 30) {
+        global.energy = floor(global.max_energy * 0.7); // 낡은 침대: 70%
+    } else if (global.bed_quality < 60) {
+        global.energy = floor(global.max_energy * 0.85); // 마모 침대: 85%
+    } else {
+        global.energy = global.max_energy;
+    }
+    // 침대 자연 열화 (매일 2~5 감소)
+    global.bed_quality -= irandom_range(2, 5);
+    if (global.bed_quality < 0) global.bed_quality = 0;
     
-    // 5. 일일 행동 플래그 및 채집 카운터 초기화
+    // 5. 일일 플래그 초기화
     global.SetFlag("daily_action_done", false);
     global.SetFlag("daily_harvest_count", 0);
+    global.weather_announced = false;
+    global.fox_appeared = false;
     
-    // 6. 스토리 이벤트 체크 (결과 반환)
+    // 6. 정제기 자연 열화 (매일 3~8 감소)
+    global.refinery_durability -= irandom_range(3, 8);
+    if (global.refinery_durability <= 0) {
+        global.refinery_durability = 0;
+        global.refinery_broken = true;
+    }
+    
+    // 7. 내일의 날씨 결정 (스토리 날짜에 따라 가중치 변화)
+    var _roll = irandom(99);
+    if (global.bloom_percent >= 90) {
+        // 개화 임박: 붉은 하늘 확률 급증
+        if (_roll < 40) global.weather = "red_sky";
+        else if (_roll < 55) global.weather = "sandstorm";
+        else if (_roll < 70) global.weather = "calm_wind";
+        else global.weather = "clear";
+    } else if (global.day >= 160) {
+        // 중반: 모래폭풍 확률 증가
+        if (_roll < 20) global.weather = "sandstorm";
+        else if (_roll < 35) global.weather = "bountiful";
+        else if (_roll < 50) global.weather = "calm_wind";
+        else if (_roll < 60) global.weather = "red_sky";
+        else global.weather = "clear";
+    } else {
+        // 초반: 대체로 평화
+        if (_roll < 10) global.weather = "sandstorm";
+        else if (_roll < 25) global.weather = "bountiful";
+        else if (_roll < 40) global.weather = "calm_wind";
+        else global.weather = "clear";
+    }
+    
+    // 날씨 효과 설정
+    switch (global.weather) {
+        case "sandstorm":
+            global.weather_speed_mult = 1.5;  // 미니게임 더 어려움
+            global.weather_spawn_mult = 0.6;  // 풀 적게 스폰
+            break;
+        case "bountiful":
+            global.weather_speed_mult = 0.85; // 미니게임 약간 쉬움
+            global.weather_spawn_mult = 1.5;  // 풀 많이 스폰
+            break;
+        case "calm_wind":
+            global.weather_speed_mult = 0.9;
+            global.weather_spawn_mult = 1.0;
+            break;
+        case "red_sky":
+            global.weather_speed_mult = 1.2;
+            global.weather_spawn_mult = 0.8;
+            break;
+        default: // clear
+            global.weather_speed_mult = 1.0;
+            global.weather_spawn_mult = 1.0;
+            break;
+    }
+    
+    // 8. 일일 이벤트 결정
+    var _ev_roll = irandom(99);
+    if (global.refinery_broken) {
+        global.daily_event = "refinery_malfunction";
+    } else if (global.day >= 148 && _ev_roll < 25) {
+        // LP-148 이후 여우 발자국 등장 가능
+        global.daily_event = "footprints";
+    } else if (_ev_roll < 15) {
+        global.daily_event = "comm_static";
+    } else if (_ev_roll < 25) {
+        global.daily_event = "cold_night";
+    } else {
+        global.daily_event = "none";
+    }
+    
+    // 9. 여우 친밀도 자연 증가 (LP-148 이후, 매일 조금씩)
+    if (global.day >= 148) {
+        global.fox_trust += irandom_range(1, 3);
+        if (global.fox_trust > 100) global.fox_trust = 100;
+    }
+    
+    // 10. 스토리 이벤트 체크 (결과 반환)
     return global.CheckStoryEvent();
 }
 

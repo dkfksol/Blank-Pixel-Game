@@ -1,18 +1,23 @@
 {
   "$GMObject":"",
-  "%Name":"obj_grass_spawner",
+  "%Name":"obj_fox",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":10,"eventType":7,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_grass_spawner",
+  "name":"obj_fox",
   "overriddenProperties":[],
   "parent":{
     "name":"Blank Pixel Game",
     "path":"Blank Pixel Game.yyp",
   },
-  "parentObjectId":null,
+  "parentObjectId":{
+    "name":"Obj_interactable",
+    "path":"objects/Obj_interactable/Obj_interactable.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,

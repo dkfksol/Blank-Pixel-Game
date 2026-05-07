@@ -5,3 +5,6 @@ conversion_rate = 8;
 
 // 시각 효과용
 pulse_timer = 0;
+
+// 수리 가능 상태 (장비 열화)
+repair_cost = 20; // 수리 시 에너지 소모
