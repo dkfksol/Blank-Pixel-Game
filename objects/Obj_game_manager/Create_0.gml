@@ -243,6 +243,7 @@ global.EndDay = function() {
     // 5. 일일 플래그 초기화
     global.SetFlag("daily_action_done", false);
     global.SetFlag("daily_harvest_count", 0);
+    global.SetFlag("cold_applied", false);
     global.weather_announced = false;
     global.fox_appeared = false;
     
@@ -562,6 +563,14 @@ global.SaveGame = function(_slot) {
     save.inventory_grass = global.inventory_grass;
     save.bloom_percent = global.bloom_percent;
     
+    // 날씨/장비/여우 시스템
+    save.weather = global.weather;
+    save.daily_event = global.daily_event;
+    save.refinery_durability = global.refinery_durability;
+    save.refinery_broken = global.refinery_broken;
+    save.bed_quality = global.bed_quality;
+    save.fox_trust = global.fox_trust;
+    
     // 현재 위치
     save.room_name = room_get_name(room);
     if (instance_exists(Obj_char)) {
@@ -631,6 +640,14 @@ global.LoadGame = function(_slot) {
     global.core_power = variable_struct_exists(save, "core_power") ? save.core_power : 20;
     global.inventory_grass = variable_struct_exists(save, "inventory_grass") ? save.inventory_grass : 0;
     global.bloom_percent = variable_struct_exists(save, "bloom_percent") ? save.bloom_percent : 0;
+    
+    // 날씨/장비/여우 시스템 복원
+    global.weather = variable_struct_exists(save, "weather") ? save.weather : "clear";
+    global.daily_event = variable_struct_exists(save, "daily_event") ? save.daily_event : "none";
+    global.refinery_durability = variable_struct_exists(save, "refinery_durability") ? save.refinery_durability : 100;
+    global.refinery_broken = variable_struct_exists(save, "refinery_broken") ? save.refinery_broken : false;
+    global.bed_quality = variable_struct_exists(save, "bed_quality") ? save.bed_quality : 100;
+    global.fox_trust = variable_struct_exists(save, "fox_trust") ? save.fox_trust : 0;
     
     // 인벤토리 복원
     global.inventory = [];
@@ -702,6 +719,18 @@ global.NewGame = function() {
     global.core_power = 20;
     global.inventory_grass = 0;
     global.bloom_percent = 0;
+    
+    // 날씨/장비/여우 초기화
+    global.weather = "clear";
+    global.daily_event = "none";
+    global.weather_speed_mult = 1.0;
+    global.weather_spawn_mult = 1.0;
+    global.weather_announced = false;
+    global.refinery_durability = 100;
+    global.refinery_broken = false;
+    global.bed_quality = 100;
+    global.fox_trust = 0;
+    global.fox_appeared = false;
     
     // 타이틀에서 남아있을 수 있는 persistent 캐릭터 제거
     if (instance_exists(Obj_char)) {

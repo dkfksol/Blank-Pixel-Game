@@ -12,7 +12,6 @@ if (global._load_pending && instance_exists(Obj_char)) {
 if (global.GetFlag("trigger_first_story") && room == Room2 && !global.dialogue_active) {
     global.SetFlag("trigger_first_story", false);
     
-    // 시작 방이 Room2이므로 에디터에 배치되어 있지 않은 캐릭터/카메라를 동적 생성
     if (!instance_exists(Obj_char)) instance_create_layer(400, 300, "Instances", Obj_char);
     if (!instance_exists(Obj_camera)) instance_create_layer(400, 300, "Instances", Obj_camera);
     
@@ -24,13 +23,32 @@ if (global.GetFlag("trigger_drone_return") && room == Room1 && !global.transitio
     global.SetFlag("trigger_drone_return", false);
     
     if (instance_exists(obj_broken_drone)) {
-        // 드론이 플레이어를 따라 방 안으로 들어온 뒤, 거치대로 슝 날아가는 연출 시작
         if (instance_exists(Obj_char)) {
             obj_broken_drone.x = Obj_char.x;
-            obj_broken_drone.crash_y = Obj_char.y - 20; // 플레이어 머리 위 높이
+            obj_broken_drone.crash_y = Obj_char.y - 20;
         }
         obj_broken_drone.state = "fly_to_rack";
     }
+}
+
+// === Room1 진입 시 여우 스폰 (친밀도 90+ & LP-200+ & 한 번만) ===
+if (room == Room1 && global.fox_trust >= 90 && global.day >= 200) {
+    if (!instance_exists(obj_fox) && !global.fox_appeared) {
+        global.fox_appeared = true;
+        // 집 안 구석에 여우가 앉아있음
+        if (layer_exists("Instances")) {
+            var _f = instance_create_layer(room_width - 80, 60, "Instances", obj_fox);
+            _f.state = "resting"; // 집에서는 안식 상태
+        }
+    }
+}
+
+// === cold_night 이벤트: 에너지 추가 감소 (Room1 진입 시 1회) ===
+if (room == Room1 && global.daily_event == "cold_night" && !global.GetFlag("cold_applied")) {
+    global.SetFlag("cold_applied", true);
+    var cold_penalty = floor(global.energy * 0.15);
+    global.energy -= cold_penalty;
+    if (global.energy < 0) global.energy = 0;
 }
 
 // 화면 전환 처리

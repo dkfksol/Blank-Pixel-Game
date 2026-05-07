@@ -1,8 +1,8 @@
-// 1. 이벤트 우선순위: 대화창, 인벤토리, 화면 전환, 시스템 메뉴 중 플레이어 행동 정지
-if ((variable_global_exists("dialogue_active") && global.dialogue_active == true) || 
-    (variable_global_exists("inventory_active") && global.inventory_active == true) ||
-    (variable_global_exists("sys_active") && global.sys_active == true) ||
-    (variable_global_exists("transition_active") && global.transition_active == true)) {
+/// @description 플레이어 이동 및 상호작용
+
+// 1. UI/전환 중 행동 정지 (variable_global_exists 제거 — 항상 존재하는 변수)
+if (global.dialogue_active || global.inventory_active || 
+    global.sys_active || global.transition_active) {
     image_speed = 0;
     image_index = 0;
     exit;
@@ -22,29 +22,28 @@ var mag = point_distance(0, 0, h_move, v_move);
 
 // 3. 이동 및 애니메이션 처리
 if (mag > 0) {
-    mag = 1; // 대각선 이동 시 속도 정규화
+    mag = 1;
     facing_dir = dir;
     
     idle_timer = 0;
     image_speed = 1;
     
-    // 시선 방향에 따른 스프라이트 업데이트
+    // 시선 방향에 따른 스프라이트 (캐싱 — Create에서 1회 조회)
     var new_sprite = sprite_index;
     if (facing_dir >= 45 && facing_dir < 135) {
-        new_sprite = asset_get_index("spr_char_up");
+        new_sprite = _spr_up;
     } else if (facing_dir >= 135 && facing_dir < 225) {
-        new_sprite = asset_get_index("spr_char_left");
+        new_sprite = _spr_left;
     } else if (facing_dir >= 225 && facing_dir < 315) {
-        new_sprite = asset_get_index("spr_char_down");
+        new_sprite = _spr_down;
     } else {
-        new_sprite = asset_get_index("spr_char_right");
+        new_sprite = _spr_right;
     }
     
     if (sprite_index != new_sprite) {
         sprite_index = new_sprite;
     }
 } else {
-    // 이동 정지 시 대기 상태 전환
     idle_timer += 1;
     if (idle_timer >= 6) {
         image_speed = 0;
@@ -56,7 +55,6 @@ if (mag > 0) {
 var hspd = lengthdir_x(walk_spd * mag, dir);
 var vspd = lengthdir_y(walk_spd * mag, dir);
 
-// X축 충돌 처리
 if (place_meeting(x + hspd, y, Obj_wall)) {
     while (!place_meeting(x + sign(hspd), y, Obj_wall)) {
         x += sign(hspd);
@@ -65,7 +63,6 @@ if (place_meeting(x + hspd, y, Obj_wall)) {
 }
 x += hspd;
 
-// Y축 충돌 처리
 if (place_meeting(x, y + vspd, Obj_wall)) {
     while (!place_meeting(x, y + sign(vspd), Obj_wall)) {
         y += sign(vspd);
@@ -74,31 +71,26 @@ if (place_meeting(x, y + vspd, Obj_wall)) {
 }
 y += vspd;
 
-// 5. 상호작용 로직 (Z키)
+// 5. 상호작용 로직 (Z키) — pressed 일때만 탐색
 if (keyboard_check_pressed(ord("Z"))) {
     var target_obj = noone;
-    var min_dist = 9999;
+    var min_dist = 60; // 최대 탐색 반경을 초기값으로 설정
     
-    // 플레이어의 현재 좌표와 시선(facing_dir)을 기준으로 탐색
     with (Obj_interactable) {
         var dist = point_distance(other.x, other.y, x, y);
         
-        // 반경 60픽셀 이내에 있는 오브젝트만 검사
-        if (dist <= 60) {
-            // 오브젝트가 플레이어를 기준으로 어느 방향에 있는지 계산
+        // 반경 체크를 먼저 수행 (비용 낮음) → 통과 시에만 각도 계산
+        if (dist <= min_dist) {
             var dir_to_obj = point_direction(other.x, other.y, x, y);
-            // 플레이어의 시선과 오브젝트 방향의 각도 차이 (-180 ~ 180)
             var angle_diff = abs(angle_difference(other.facing_dir, dir_to_obj));
             
-            // 시야각 90도(좌우 45도) 이내에 있으면서 가장 가까운 객체 선택
-            if (angle_diff <= 90 && dist < min_dist) {
+            if (angle_diff <= 90) {
                 min_dist = dist;
                 target_obj = id;
             }
         }
     }
     
-    // 대상 객체가 존재하면 상호작용 이벤트(User Event 0) 호출
     if (target_obj != noone) {
         with (target_obj) {
             event_user(0);

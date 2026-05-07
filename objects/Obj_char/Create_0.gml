@@ -16,3 +16,9 @@ facing_dir = 270; // 시선 방향 (기본: 270도/아래쪽)
 sprite_index = asset_get_index("spr_char_down"); 
 
 idle_timer = 0; // 연타 방지용 멈춤 타이머
+
+// 스프라이트 인덱스 캐싱 (Step에서 매 프레임 asset_get_index 호출 방지)
+_spr_up    = asset_get_index("spr_char_up");
+_spr_down  = asset_get_index("spr_char_down");
+_spr_left  = asset_get_index("spr_char_left");
+_spr_right = asset_get_index("spr_char_right");
